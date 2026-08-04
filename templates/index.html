@@ -1,0 +1,337 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wellora - Symptom Checker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f3e6ff;
+      font-family: 'Times New Roman', Times, serif;
+      color: #1b1464;
+    }
+
+    .navbar {
+      background-color: #5a54a3;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    .logo .myimg {
+      width: 50px;
+      height: 50px;
+      border: 2px solid white;
+      border-radius: 25px;
+    }
+
+    .form-container {
+      max-width: 600px;
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 80px 50px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin-left: 90px;
+    }
+
+    label[for="symptoms"] {
+      color: #1b1464;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    #symptoms {
+      height: 50px;
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #f0f8ff;
+      width: 100%;
+    }
+
+    .btn-danger {
+      background-color: #1b1464;
+      border: none;
+      font-weight: bold;
+      border-radius: 12px;
+    }
+
+    .btn-danger:hover {
+      background-color: #3e2f8f;
+    }
+
+    .btn-modal {
+      border-radius: 10px;
+      font-weight: bold;
+      padding: 6px 14px;
+      font-size: 14px;
+    }
+
+    .modal-header {
+      background-color: #5a54a3;
+      color: white;
+    }
+
+    .modal-body {
+      background-color: #fdfcff;
+      color: #1b1464;
+    }
+
+    .main-content h1 {
+      text-align: left;
+      color: #5a54a3;
+      margin-left: 90px;
+    }
+
+  .sticker-container {
+  position: fixed;
+  top: 50%;                   
+  left: 72%;                 
+  transform: translate(-50%, -50%);  
+  z-index: 999;
+  padding: 10px;
+  width: 1850;               
+  height: 1800;               
+}
+
+.sticker-container img {
+  width: 150%;                
+  height: 1800;
+}
+
+
+    .btn-outline-success {
+      border-color: #1b1464;
+      color: #1b1464;
+    }
+
+    .btn-outline-success:hover {
+      background-color: #1b1464;
+      color: white;
+    }
+
+    .btn-outline-warning {
+      border-color: #ffcc00;
+      color: #ff9900;
+    }
+
+    .btn-outline-warning:hover {
+      background-color: #ffcc00;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <div class="logo">
+      <img class="myimg" src="{{ url_for('static', filename='medical-symbol.png') }}" alt="logo">
+    </div>
+    <a class="navbar-brand ms-2" href="#">Wellora</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
+      </ul>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarProfile" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile" width="30" height="30" class="rounded-circle me-2">
+            Profile
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfile">
+            <li class="dropdown-item"><strong>{{ user_name }}</strong></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('history') }}">🕘 History</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('logout') }}">🚪 Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Section -->
+<div class="main-content">
+  <b><h1 class="my-4" style="margin-right: 20px;">Health Care Center</h1></b> 
+  <div class="form-container">
+    <form action="/get_disease_info" method='POST'>
+      <div class="form-group mb-4">
+        <label for="symptoms">Select Symptoms:</label>
+        <input type="text" class="form-control" id="symptoms" name="symptoms" placeholder="Type symptoms such as itching, sleeping, aching etc.">
+      </div>
+      <div class="form-group mb-4">
+    <label for="location">Your Location:</label>
+    <input type="text" class="form-control" id="location" name="location" placeholder="Enter your city or area (e.g., Hyderabad, MG Road)" required>
+  </div>
+      <button type="submit" class="btn btn-danger btn-lg w-100">Predict</button>
+    </form>
+  </div>
+
+  <div class="container text-center mt-4">
+    <h1 class="my-3">Our System Results</h1>
+    <div class="d-flex flex-wrap gap-1 mb-2 justify-content-start">
+      <button class="btn btn-warning btn-modal" data-bs-toggle="modal" data-bs-target="#diseaseModal">Disease</button>
+      <button class="btn btn-primary btn-modal" data-bs-toggle="modal" data-bs-target="#descriptionModal">Description</button>
+      <button class="btn btn-info btn-modal" data-bs-toggle="modal" data-bs-target="#precautionModal">Precaution</button>
+      <button class="btn btn-danger btn-modal" data-bs-toggle="modal" data-bs-target="#medicationsModal">Medications</button>
+      <button class="btn btn-success btn-modal" data-bs-toggle="modal" data-bs-target="#workoutsModal">Workouts</button>
+      <button class="btn btn-warning btn-modal" data-bs-toggle="modal" data-bs-target="#dietsModal">Diets</button>
+      <button class="btn btn-secondary btn-modal" data-bs-toggle="modal" data-bs-target="#doctorModal">Doctor</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="sticker-container">
+  <img src="{{ url_for('static', filename='doc.webp') }}" alt="Sticker" class="sticker-img">
+</div>
+
+<div class="modal fade" id="diseaseModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Predicted Disease</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><p>{{ predicted_disease }}</p></div>
+  </div></div>
+</div>
+
+<div class="modal fade" id="descriptionModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Description</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><p>{{ dis_des }}</p></div>
+  </div></div>
+</div>
+
+<div class="modal fade" id="precautionModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Precautions</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+    {% if my_precautions is iterable and my_precautions is not string %}
+  <ul>
+    {% for i in my_precautions %}
+      <li>{{ i }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>{{ my_precautions }}</p>
+{% endif %}
+
+    </div>
+  </div></div>
+</div>
+
+
+
+
+
+
+
+
+<div class="modal fade" id="medicationsModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Medications</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        {% if medications and medications|length > 1 %}
+          <ul>
+            {% for i in medications %}
+              <li>{{ i }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>{{ medications }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="workoutsModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Workouts</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <div class="modal-body">
+        {% if workout and workout|length > 1 %}
+          <ul>
+            {% for i in workout %}
+              <li>{{ i }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>{{ workout }}</p>
+        {% endif %}
+</div>
+
+    </div>
+  </div></div>
+</div>
+
+<div class="modal fade" id="dietsModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Diets</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <div class="modal-body">
+        {% if my_diet and my_diet|length > 1 %}
+          <ul>
+            {% for i in my_diet %}
+              <li>{{ i }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>{{ my_diet }}</p>
+        {% endif %}
+</div>
+
+    </div>
+  </div></div>
+</div>
+
+<div class="modal fade" id="doctorModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nearby Doctors</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        {% if doctors %}
+        <div class="container">
+          <div class="row">
+            {% for doctor in doctors %}
+            <div class="col-md-6 mb-4">
+              <div class="card h-100 shadow-sm border-primary">
+                <div class="card-body">
+                  <h5 class="card-title text-primary">{{ doctor.name }}</h5>
+                  <p class="card-text">
+                    <strong>Address:</strong><br>{{ doctor.address }}<br>
+                    <strong>Phone:</strong> {{ doctor.phone }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% else %}
+        <p>No doctors found for this location/specialist.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{# <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> 
+#}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

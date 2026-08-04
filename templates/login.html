@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styl.css') }}">
+</head>
+<body>
+    <div class="top-section">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='medical-symbol.png') }}" alt="Logo" class="logo" width="60" height="60">
+        </div>
+        <h1>Wellora</h1>
+    </div>
+
+    <div class="main-content">
+        <div class="left-section">
+            <h1>Welcome to WELLORA !!</h1>
+            <h2>Your Personal Medical Recommendation System</h2>
+            <p>Login to access your account</p>
+            <p>We are here to help you with your health needs.</p>
+        </div>
+
+        <div class="white-section">
+            <h4>LOGIN</h4>
+            <form method="POST" action="{{ url_for('login') }}">  
+                <div class="email">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+                <br>
+                <div class="password">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <p class="login-link">
+                    <button type="submit" class="login-button">Login</button>
+                </p>
+            </form>
+            <p class="register-link">
+                Don't have an account?
+                <a href="{{ url_for('signup') }}" class="register-button">Register</a>
+                
+            </p>
+        </div>
+    </div>
+</body>
+</html>
